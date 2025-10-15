@@ -37,16 +37,23 @@ mode_sentiment = sentiment_analysis(client=client, transcription=transcription, 
 # Generate QA pairs
 qa_pairs = question_answer(client=client, transcription=transcription, model="gpt-4.1")
 
+# Format JSON output
+merge_output = {
+    "Transcription": transcription,
+    "Objects": json.loads(objects)["objects"],
+    "Mode and sentiment": json.loads(mode_sentiment),
+    "QA pairs": json.loads(qa_pairs)["QA_pairs"]
+}
+json_output = json.dumps(merge_output, indent=4, ensure_ascii=False).replace(',\n    "', ',\n\n    "')
+logger.info(json_output)
 
 
 
 
 
-
-
-        json_output = json.dumps(
-            {"Transcription": transcription.text},
-            indent=2
-        )
+        # json_output = json.dumps(
+        #     {"Transcription": transcription.text},
+        #     indent=2
+        # )
 
 
