@@ -24,6 +24,9 @@ def audio_video_transcription(client: OpenAI, file_path: str, model: str, langua
         str: The complete transcription of the audio/video.
     
     Raises:
+        ValueError:
+            - If the file type is not recognised.
+            - If the file type is not supported.
         RuntimeError: If an unexpected error occurs while transcribing.
     """
 
