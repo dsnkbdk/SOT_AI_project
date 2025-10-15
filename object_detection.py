@@ -121,12 +121,12 @@ def object_detection(client: OpenAI, video_path: str, model: str, sample_rate: f
             "schema": {
                 "type": "object",
                 "properties": {
-                    "Objects": {
+                    "objects": {
                         "type": "array",
                         "items": {"type": "string"}
                     }
                 },
-                "required": ["Objects"],
+                "required": ["objects"],
                 "additionalProperties": False
             }
         }
