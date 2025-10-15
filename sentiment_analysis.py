@@ -3,11 +3,7 @@ from openai import OpenAI
 
 logger = logging.getLogger(__name__)
 
-def sentiment_analysis(
-    client: OpenAI,
-    transcription: str,
-    model: str
-) -> str:
+def sentiment_analysis(client: OpenAI, transcription: str, model: str) -> str:
     """
     Analyse the overall mode and sentiment of the video using OpenAI.
     
@@ -20,7 +16,7 @@ def sentiment_analysis(
         str: A JSON-formatted string containing the mode and sentiment analysis results.
     
     Raises:
-        RuntimeError: If an unexpected error occurs while analysing mode and sentiments.
+        RuntimeError: If an unexpected error occurs while analysing mode and sentiment.
     """
 
     # Build input content
@@ -83,6 +79,6 @@ def sentiment_analysis(
         )
     
     except Exception as e:
-        raise RuntimeError(f"Unexpected error occurred while analysing mode and sentiments: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while analysing mode and sentiment: {e}") from e
     
     return response.output_text

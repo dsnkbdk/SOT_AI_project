@@ -63,12 +63,7 @@ def video_to_base64(video_path: str, sample_rate: float=0.5) -> list[str]:
     return base64_images
 
 
-def object_detection(
-    client: OpenAI,
-    video_path: str,
-    model: str,
-    sample_rate: float=0.5
-) -> str:
+def object_detection(client: OpenAI, video_path: str, model: str, sample_rate: float=0.5) -> str:
     """
     Detect distinct objects appearing in a video using OpenAI.
     

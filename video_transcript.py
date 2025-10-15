@@ -3,13 +3,7 @@ from openai import OpenAI
 
 logger = logging.getLogger(__name__)
 
-def video_transcript(
-    client: OpenAI,
-    video_path: str,
-    model: str,
-    language: str="en",
-    response_format: str="json"
-) -> str:
+def video_transcript(client: OpenAI, video_path: str, model: str, language: str="en", response_format: str="json") -> str:
     """
     Transcribe a video/audio file using the OpenAI API.
     

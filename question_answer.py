@@ -3,11 +3,7 @@ from openai import OpenAI
 
 logger = logging.getLogger(__name__)
 
-def question_answer(
-    client: OpenAI,
-    transcription: str,
-    model: str
-) -> str:
+def question_answer(client: OpenAI, transcription: str, model: str) -> str:
     """
     Convert a video transcription into a list of question-answer (QA) pairs about the video.
     
