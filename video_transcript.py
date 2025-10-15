@@ -28,8 +28,8 @@ def video_transcript(client: OpenAI, video_path: str, model: str, language: str=
     try:
         # Extract audio track
         with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as temp_audio:
-            with VideoFileClip(file_path) as clip:
-                clip.audio.write_audiofile(temp_audio.name)
+            with VideoFileClip(video_path) as clip:
+                clip.audio.write_audiofile(temp_audio.name, logger=None)
             audio_file = temp_audio.name
 
         with open(audio_file, "rb") as file:

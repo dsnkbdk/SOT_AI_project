@@ -93,7 +93,10 @@ def object_detection(client: OpenAI, video_path: str, model: str, sample_rate: f
     dev_content = [
         {
             "type": "input_text",
-            "text": "Return results that strictly match the given JSON format."
+            "text": (
+                "Number each object in the list."
+                "Return results that strictly match the given JSON format."
+            )
         }
     ]
 
