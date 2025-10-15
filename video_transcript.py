@@ -37,7 +37,8 @@ def video_transcript(client: OpenAI, video_path: str, model: str, language: str=
                 file=file,
                 model=model,
                 language=language,
-                response_format=response_format
+                response_format=response_format,
+                prompt="Transcribe exactly what is spoken. Ignore any background music or noise that may be present."
             )
     
     except Exception as e:
