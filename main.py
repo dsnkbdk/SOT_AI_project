@@ -32,9 +32,12 @@ if not os.path.exists(video_path):
 
 # Check file type
 mime_type, _ = mimetypes.guess_type(video_path)
+# Only support video files
 if mime_type.startswith("video/"):
     # Initialise the client
     client = OpenAI(api_key=api_key)
+else:
+    raise ValueError(f"Unsupported file type: {mime_type}")
 
 # Get the complete transcription
 transcription = video_transcript(client=client, video_path=video_path, model="whisper-1")
@@ -54,4 +57,3 @@ merge_output = {
 }
 json_output = json.dumps(merge_output, indent=4, ensure_ascii=False).replace(',\n    "', ',\n\n    "')
 logger.info(json_output)
-
