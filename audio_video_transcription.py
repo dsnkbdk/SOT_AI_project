@@ -7,7 +7,7 @@ from moviepy import VideoFileClip
 
 logger = logging.getLogger(__name__)
 
-def audio_video_transcription(client: OpenAI, file_path: str, model: str, language: str="en", response_format: str="json") -> str:
+def audio_video_transcript(client: OpenAI, file_path: str, model: str, language: str="en", response_format: str="json") -> str:
     """
     Transcribe an audio/video file using the OpenAI API.
     This function automatically detects whether the input file is audio or video.
