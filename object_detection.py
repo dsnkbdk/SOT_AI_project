@@ -95,18 +95,22 @@ def object_detection(
         raise RuntimeError("No frames were extracted from the video")
 
     # Build input content
-    content = [
+    dev_content = [
         {
             "type": "input_text",
-            "text": (
-                "List as many distinct objects as possible that appear in these images."
-                "Return results that strictly match the given JSON format."
-            )
+            "text": "Return results that strictly match the given JSON format."
+        }
+    ]
+
+    usr_content = [
+        {
+            "type": "input_text",
+            "text": "List as many distinct objects as possible that appear in these images."
         }
     ]
 
     for base64_image in base64_images:
-        content.append(
+        usr_content.append(
             {
                 "type": "input_image",
                 "image_url": f"data:image/jpeg;base64,{base64_image}",
@@ -137,7 +141,10 @@ def object_detection(
     try:
         response = client.responses.create(
             model=model,
-            input=[{"role": "user", "content": content}],
+            input=[
+                {"role": "developer", "content": dev_content},
+                {"role": "user", "content": usr_content}
+            ],
             text=json_schema
         )
     
