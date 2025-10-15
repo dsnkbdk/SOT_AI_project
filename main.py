@@ -1,5 +1,6 @@
 import os
 import logging
+import mimetypes
 from openai import OpenAI
 from dotenv import load_dotenv
 from video_transcript import video_transcript
@@ -14,19 +15,26 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Load API key
+# Load .env
 load_dotenv()
+
+# Load api key
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     raise RuntimeError("OPENAI_API_KEY is missing. Check `.env` file or environment variables")
 
-# Initialise the client
-client = OpenAI(api_key=api_key)
-
-# Load video file
-video_path = "AI_Intern_Project.mp4"
+# Load video path
+video_path = os.getenv("VIDEO_PATH")
+if not video_path:
+    raise RuntimeError("VIDEO_PATH is missing. Check `.env` file or environment variables")
 if not os.path.exists(video_path):
-    raise FileNotFoundError("Video file not found")
+    raise FileNotFoundError(f"Video file not found: {video_path}")
+
+# Check file type
+mime_type, _ = mimetypes.guess_type(video_path)
+if mime_type.startswith("video/"):
+    # Initialise the client
+    client = OpenAI(api_key=api_key)
 
 # Get the complete transcription
 transcription = video_transcript(client=client, video_path=video_path, model="whisper-1")
@@ -46,14 +54,4 @@ merge_output = {
 }
 json_output = json.dumps(merge_output, indent=4, ensure_ascii=False).replace(',\n    "', ',\n\n    "')
 logger.info(json_output)
-
-
-
-
-
-        # json_output = json.dumps(
-        #     {"Transcription": transcription.text},
-        #     indent=2
-        # )
-
 
