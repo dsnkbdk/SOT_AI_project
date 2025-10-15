@@ -20,7 +20,7 @@ def sentiment_analysis(
         str: A JSON-formatted string containing the mode and sentiment analysis results.
     
     Raises:
-        RuntimeError: If sentiment analysis fails.
+        RuntimeError: If an unexpected error occurs while analysing mode and sentiments.
     """
 
     # Build input content
@@ -83,6 +83,6 @@ def sentiment_analysis(
         )
     
     except Exception as e:
-        raise RuntimeError(f"Sentiment analysis failed: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while analysing mode and sentiments: {e}") from e
     
     return response.output_text

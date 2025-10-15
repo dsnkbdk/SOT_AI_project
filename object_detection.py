@@ -21,7 +21,7 @@ def video_to_base64(video_path: str, sample_rate: float=0.5) -> list[str]:
         RuntimeError:
             - If the video file cannot be opened.
             - If the video metadata is invalid.
-            - If the video conversion to base64 fails.
+            - If an unexpected error occurs while converting a video to base64.
     """
 
     if sample_rate <= 0:
@@ -55,7 +55,7 @@ def video_to_base64(video_path: str, sample_rate: float=0.5) -> list[str]:
             image_count += 1
     
     except Exception as e:
-        raise RuntimeError(f"Video to base64 failed: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while converting a video to base64: {e}") from e
 
     finally:
         cap.release()
@@ -85,7 +85,7 @@ def object_detection(
         ValueError:  If `sample_rate` is less than or equal to 0.
         RuntimeError:
             - If frame extraction fails.
-            - If object detection fails.
+            - If an unexpected error occurs while detecting objects.
     """
     
     # Extract frames from the video
@@ -149,6 +149,6 @@ def object_detection(
         )
     
     except Exception as e:
-        raise RuntimeError(f"Object detection failed: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while detecting objects: {e}") from e
     
     return response.output_text

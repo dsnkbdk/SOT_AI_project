@@ -24,7 +24,7 @@ def video_transcript(
         str: The complete transcription of the video.
     
     Raises:
-        RuntimeError: If transcription fails.
+        RuntimeError: If an unexpected error occurs while transcribing.
     """
 
     try:
@@ -37,7 +37,7 @@ def video_transcript(
             )
     
     except Exception as e:
-        raise RuntimeError(f"Transcription failed: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while while transcribing: {e}") from e
     
     return transcription.text
     
