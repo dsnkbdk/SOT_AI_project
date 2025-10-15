@@ -21,7 +21,7 @@ def video_transcript(
         response_format (str, optional): The format of the output, (e.g., json, text, srt, verbose_json, or vtt).
     
     Returns:
-        str: Transcription text.
+        str: The complete transcription of the video.
     
     Raises:
         RuntimeError: If transcription fails.
