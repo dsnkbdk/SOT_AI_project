@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 def question_answer(client: OpenAI, transcription: str, model: str) -> str:
     """
-    Convert a video transcription into a list of question-answer (QA) pairs about the video.
+    Convert a video transcription into a list of question-answer (Q&A) pairs about the video.
     
     Args:
         client (OpenAI): An initialised OpenAI client with a valid API key.
@@ -13,10 +13,10 @@ def question_answer(client: OpenAI, transcription: str, model: str) -> str:
         model (str): Model ID used to generate the response, like gpt-4o or o3.
     
     Returns:
-        str: A JSON-formatted string containing a list of QA pairs.
+        str: A JSON-formatted string containing a list of Q&A pairs.
     
     Raises:
-        RuntimeError: If an unexpected error occurs while generating QA pairs.
+        RuntimeError: If an unexpected error occurs while generating Q&A pairs.
     """
 
     # Build input content
@@ -24,7 +24,7 @@ def question_answer(client: OpenAI, transcription: str, model: str) -> str:
         {
             "type": "input_text",
             "text": (
-                "Each QA pair should be relevant to the video transcription content and provide a concise answer."
+                "Each Q&A pair should be relevant to the video transcription content and provide a concise answer."
                 "Return results that strictly match the given JSON format."
             )
         }
@@ -34,7 +34,7 @@ def question_answer(client: OpenAI, transcription: str, model: str) -> str:
         {
             "type": "input_text",
             "text": (
-                "Based on the given video transcription, generate a list of 5 to 10 useful Question-Answer (QA) pairs."
+                "Based on the given video transcription, generate a list of 5 to 10 useful Question-Answer (Q&A) pairs."
                 f"Transcription: {transcription}"
             )
         }
@@ -79,6 +79,6 @@ def question_answer(client: OpenAI, transcription: str, model: str) -> str:
         )
     
     except Exception as e:
-        raise RuntimeError(f"Unexpected error occurred while generating QA pairs: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while generating Q&A pairs: {e}") from e
     
     return response.output_text

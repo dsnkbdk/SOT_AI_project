@@ -42,7 +42,7 @@ def video_transcript(client: OpenAI, video_path: str, model: str, language: str=
             )
     
     except Exception as e:
-        raise RuntimeError(f"Unexpected error occurred while while transcribing: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while transcribing: {e}") from e
     
     finally:
         if os.path.exists(temp_audio.name):
