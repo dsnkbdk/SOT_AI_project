@@ -69,6 +69,7 @@ def sentiment_analysis(client: OpenAI, transcription: str, model: str) -> str:
 
     # Call OpenAI API
     try:
+        logger.info("Analysing mode and sentiment...")
         response = client.responses.create(
             model=model,
             input=[
@@ -79,6 +80,6 @@ def sentiment_analysis(client: OpenAI, transcription: str, model: str) -> str:
         )
     
     except Exception as e:
-        raise RuntimeError(f"Unexpected error occurred while analysing mode and sentiment: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while analysing mode and sentiment") from e
     
     return response.output_text

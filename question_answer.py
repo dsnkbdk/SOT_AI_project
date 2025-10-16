@@ -69,6 +69,7 @@ def question_answer(client: OpenAI, transcription: str, model: str) -> str:
 
     # Call OpenAI API
     try:
+        logger.info("Generating Q&A pairs...")
         response = client.responses.create(
             model=model,
             input=[
@@ -79,6 +80,6 @@ def question_answer(client: OpenAI, transcription: str, model: str) -> str:
         )
     
     except Exception as e:
-        raise RuntimeError(f"Unexpected error occurred while generating Q&A pairs: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while generating Q&A pairs") from e
     
     return response.output_text

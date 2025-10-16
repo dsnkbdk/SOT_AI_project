@@ -31,31 +31,40 @@ def video_to_base64(video_path: str, sample_rate: float=0.5) -> list[str]:
     if not cap.isOpened():
         raise RuntimeError(f"Cannot open the video file: {video_path}")
 
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
     # Validate video metadata
     if fps <= 0 or frame_count <=0:
         raise RuntimeError(f"Invalid video metadata: fps={fps}, frame_count={frame_count}")
+    
+    sample_interval = int(fps / sample_rate)
+    
+    if sample_interval > frame_count:
+        logger.warning(f"sample_rate is too low, only one frame will be sampled")
+    
+    elif sample_interval < 1:
+        logger.warning(f"sample_rate is too high, all frames will be sampled, may exceed the API limit")
+    
+    sample_interval = max(1, min(sample_interval, frame_count))
 
-    sample_interval = max(1, min(int(fps / sample_rate), int(frame_count)))
-
-    image_count = 0
+    frame_index = 0
     base64_images = []
 
     try:
+        logger.info("Sampling video...")
         while True:
             ret, img = cap.read()
             if not ret:
                 break
-            if image_count % sample_interval == 0:
+            if frame_index % sample_interval == 0:
                 _, buffer = cv2.imencode('.jpg', img)
                 base64_str = base64.b64encode(buffer).decode("utf-8")
                 base64_images.append(base64_str)
-            image_count += 1
+            frame_index += 1
     
     except Exception as e:
-        raise RuntimeError(f"Unexpected error occurred while converting a video to base64: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while converting a video to base64") from e
 
     finally:
         cap.release()
@@ -88,6 +97,8 @@ def object_detection(client: OpenAI, video_path: str, model: str, sample_rate: f
 
     if not base64_images:
         raise RuntimeError("No frames were extracted from the video")
+    
+    logger.debug(f"Extracted {len(base64_images)} frames from the video")
 
     # Build input content
     dev_content = [
@@ -137,6 +148,7 @@ def object_detection(client: OpenAI, video_path: str, model: str, sample_rate: f
 
     # Call OpenAI API
     try:
+        logger.info("Detecting objects...")
         response = client.responses.create(
             model=model,
             input=[
@@ -147,6 +159,6 @@ def object_detection(client: OpenAI, video_path: str, model: str, sample_rate: f
         )
     
     except Exception as e:
-        raise RuntimeError(f"Unexpected error occurred while detecting objects: {e}") from e
+        raise RuntimeError(f"Unexpected error occurred while detecting objects") from e
     
     return response.output_text

@@ -20,7 +20,19 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 def load_env() -> tuple[str, str]:
     """
-    Load and validate API key and video path in the current environment.
+    This function loads the `.env` file from the current working directory (if present),
+    retrieves the OpenAI API key and video file path from the environment, and performs
+    validation checks.
+    
+    Returns:
+        tuple[str, str]: A tuple containing:
+            - api_key (str): The OpenAI API key for authentication.
+            - video_path (str): The path of the video file to be processed.
+
+    Raises:
+        RuntimeError: If `OPENAI_API_KEY` or `VIDEO_PATH` is missing.
+        FileNotFoundError: If the specified video file does not exist.
+        ValueError: If the file type is unsupported.
     """
 
     # Load .env
@@ -48,7 +60,30 @@ def load_env() -> tuple[str, str]:
 
 def openai_pipeline(api_key: str, video_path: str) -> dict:
     """
-    Run the complete video parsing pipeline.
+    This function orchestrates the complete video parsing pipeline.
+    Each stage is executed sequentially and logged for traceability.
+    
+    Args:
+        api_key (str): The OpenAI API key for authentication.
+        video_path (str): The path of the video file to be processed.
+    
+    Returns:
+        dict: A dictionary with the following structure:
+            {
+                "Transcription": <str>,    # Video's complete Transcription
+                "Objects": <list[str]>,    # As many Objects detected in video
+                "Mode and sentiment": {    # The over all mode and sentiment of the video
+                    "mode": <str>,
+                    "sentiment": <str>,
+                    "explanation": <str>
+                },
+                "Q&A pairs": [             # Convert video's transcript to list of QA pairs about the video
+                    {"Q": <str>, "A": <str>},
+                    ...
+                ]
+            }
+    Raises:
+        Exception: Propagates any unexpected error that occurs during execution.
     """
     
     # Initialise the client
@@ -56,20 +91,20 @@ def openai_pipeline(api_key: str, video_path: str) -> dict:
 
     try:
         # Get the complete transcription
-        logger.info("Step 1/4: Getting video transcription...")
         transcription = video_transcript(client=client, video_path=video_path, model="whisper-1")
+        logger.info("Transcription is complete")
 
         # Detect objects in the video
-        logger.info("Step 2/4: Detecting objects in video...")
         objects = object_detection(client=client, video_path=video_path, model="gpt-4.1", sample_rate=0.5)
+        logger.info("Object detection is complete")
 
         # Analyse the mode and sentiment of the video
-        logger.info("Step 3/4: Analysing mode and sentiment...")
         mode_sentiment = sentiment_analysis(client=client, transcription=transcription, model="gpt-4.1")
+        logger.info("Mode and sentiment analysis are complete")
 
         # Generate Q&A pairs
-        logger.info("Step 4/4: Generating Q&A pairs...")
         qa_pairs = question_answer(client=client, transcription=transcription, model="gpt-4.1")
+        logger.info("Q&A pairs generation is complete")
 
     except Exception:
         logger.exception("Unexpected error occurred while parsing video")
@@ -79,9 +114,9 @@ def openai_pipeline(api_key: str, video_path: str) -> dict:
         # Merge and format output
         merge_output = {
             "Transcription": transcription,
-            "Objects": json.loads(objects)["objects"],
+            "Objects": json.loads(objects).get("objects", []),
             "Mode and sentiment": json.loads(mode_sentiment),
-            "Q&A pairs": json.loads(qa_pairs)["QA_pairs"]
+            "Q&A pairs": json.loads(qa_pairs).get("QA_pairs", [])
         }
 
     except Exception:
@@ -94,6 +129,19 @@ def openai_pipeline(api_key: str, video_path: str) -> dict:
 def main():
     """
     Main entry point for execution.
+    The function serves as the top-level orchestration layer,
+    all lower-level exceptions are propagated upward and logged here.
+    
+    Logging:
+        - INFO: Prints the final formatted JSON output.
+        - EXCEPTION: Captures full traceback information if a fatal error occurs.
+    
+    Raises:
+        Exception: Any unexpected error that occurs during execution.
+    
+    Example:
+        >>> if __name__ == "__main__":
+        ...     main()
     """
     
     try:
