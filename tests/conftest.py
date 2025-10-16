@@ -1,11 +1,6 @@
-import os
-import sys
 import pytest
 from types import SimpleNamespace
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
 
 @pytest.fixture
 def mock_openai_client():
@@ -21,6 +16,7 @@ def mock_openai_client():
             )
     return _Client()
 
+
 @pytest.fixture
 def mock_openai_client_sentiment():
     class _Client:
@@ -31,6 +27,7 @@ def mock_openai_client_sentiment():
                 )
             )
     return _Client()
+
 
 @pytest.fixture
 def mock_openai_client_qa():
