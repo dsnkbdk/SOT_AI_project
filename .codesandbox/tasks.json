@@ -12,7 +12,6 @@
     "start": {
       "name": "start",
       "command": "python main.py",
-      "runAtStart": false,
       "restartOn": {
         "files": [
           "main.py"
