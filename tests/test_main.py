@@ -21,10 +21,14 @@ def test_load_env_happy_path(tmp_path, monkeypatch):
 
 def test_load_env_missing_key(monkeypatch, tmp_path):
     """Missing OPENAI_API_KEY should raise RuntimeError."""
+    # Disable loading of real .env files
+    monkeypatch.setattr(main, "load_dotenv", lambda: None)
+
     if "OPENAI_API_KEY" in os.environ:
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    
     monkeypatch.setenv("VIDEO_PATH", str(tmp_path / "a.mp4"))
-
+    
     with pytest.raises(RuntimeError):
         main.load_env()
 
