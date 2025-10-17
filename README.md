@@ -1,11 +1,11 @@
 # AI-Driven Video Understanding Application
 
-
 ## Overview
 
 This repository is the **Goldenset Intern-to-Hire Project**, which implements a modular and automated AI pipeline for video understanding using the OpenAI API. It integrates speech transcription, object detection, sentiment analysis, and question-answer generation into a single streamlined process.
 
 This Project requires candidates to:
+
 - Use OpenAI API to process a `.mp4` video and output a structured JSON containing:
   - Full Transcription
   - Objects detected in the video
@@ -15,10 +15,9 @@ This Project requires candidates to:
 - Add README.md
 - Ensure one-click execution in [CodeSandbox.io](https://codesandbox.io/)
 
-
 ## Project Structure
 
-```
+```bash
 .
 ├── .codesandbox/                   # CodeSandbox configuration
 ├── .devcontainer/                  # Development container configuration
@@ -45,7 +44,6 @@ This Project requires candidates to:
     └── test_video_transcript.py    # Test file for video_transcript.py
 ```
 
-
 ## Environment Configuration
 
 ### 1. API key
@@ -70,32 +68,32 @@ For this project, please ensure the following configuration:
 
 - **Visibility**
 
-    Set it to **Unlisted (everyone with the link can view)**, which allows reviewers to reproduce and evaluate the work.
+  Set it to **Unlisted (everyone with the link can view)**, which allows reviewers to reproduce and evaluate the work.
 
 - **Project Setup**
 
-    Navigating to:
+  Navigating to:
 
-    ```
-    Set up my own Development Container
-        ├── Python version
-        │   └── 3.12-bullseye
-        ├── Setup tasks
-        │   └── Add command: pip install -r requirements.txt
-        └── Environment variables
-            ├── OPENAI_API_KEY=sk-proj-xxxxxxxxx
-            └── VIDEO_PATH=AI_Intern_Project.mp4
-    ```
+  ```
+  Set up my own Development Container
+      ├── Python version
+      │   └── 3.12-bullseye
+      ├── Setup tasks
+      │   └── Add command: pip install -r requirements.txt
+      └── Environment variables
+          ├── OPENAI_API_KEY=sk-proj-xxxxxxxxx
+          └── VIDEO_PATH=AI_Intern_Project.mp4
+  ```
 
 ### 3. Dependencies
 
-| Package                  | Purpose                              |
-|--------------------------|--------------------------------------|
-| `moviepy`                | Extracts audio from video            |
-| `openai`                 | Interfaces with OpenAI models        |
-| `opencv-python-headless` | Frame sampling for object detection  |
-| `pytest`, `pytest-cov`   | Unit testing and coverage            |
-| `python-dotenv`          | Loads `.env` environment variables   |
+| Package                  | Purpose                             |
+| ------------------------ | ----------------------------------- |
+| `moviepy`                | Extracts audio from video           |
+| `openai`                 | Interfaces with OpenAI models       |
+| `opencv-python-headless` | Frame sampling for object detection |
+| `pytest`, `pytest-cov`   | Unit testing and coverage           |
+| `python-dotenv`          | Loads `.env` environment variables  |
 
 ### 4. Configuration Files
 
@@ -105,7 +103,6 @@ Ensure the following configuration files exist in the root directory:
 - `.gitignore` — Specifies files and directories to be excluded from version control.
 - `pytest.ini` — Contains Pytest configuration for logging, coverage, and test discovery.
 - `requirements.txt` — Lists all Python dependencies used in the project.
-
 
 ## Running
 
@@ -138,7 +135,7 @@ You will see a structured JSON printed in the terminal, similar to:
 ```json
 {
     "Transcription": "Cooking the perfect...",
-    
+
     "Objects": [
         "1. Stove",
         "2. Frying pan",
@@ -169,10 +166,10 @@ You will see a structured JSON printed in the terminal, similar to:
 ### Customization
 
 You can modify the pipeline by:
+
 - Changing the model name (e.g., `gpt-5`, `gpt-4o`)
 - Adjusting frame sampling rate in `object_detection.py`
 - Changing or adding custom prompts
-
 
 ## Approaches and Solutions
 
@@ -188,8 +185,8 @@ According to OpenAI's official documentation [Create transcription](https://plat
 
 To address this, we used the `moviepy` library to extract the audio track from the video and convert it into an `.mp3` file before sending it to the model. The results showed that:
 
-- Transcription quality: No noticeable difference  
-- Token usage: Significantly reduced  
+- Transcription quality: No noticeable difference
+- Token usage: Significantly reduced
 - Processing time: Reduced to roughly 10 seconds
 
 This simple pre-processing step significantly improves the efficiency of the transcription workflow without compromising accuracy.
@@ -211,6 +208,7 @@ After a few minutes, take a peek and flip when it's a deep golden brown. Immedia
 ```
 
 - whisper-1
+
 ```
 After a few minutes, take a peek and flip when it's a deep golden brown. Immediately add a knob of butter and some aromatics and begin basting the steak.
 ```
@@ -219,7 +217,6 @@ The results showed that only the `whisper-1` model produced a fully accurate tra
 `gpt-4o-mini-transcribe` performed the worst, while `gpt-4o-transcribe` missed some minor details.
 
 Therefore, we ultimately selected `whisper-1` model for transcription.
-
 
 #### 3. Tuning
 
@@ -260,12 +257,12 @@ We recommend keeping `sample_rate = 0.5` (samples one frame every two seconds). 
 
 #### 2. Model Building
 
-We directly followed the official examples to build the image analysis model, keeping  `model="gpt-4.1"` unchanged. Because we found that `gpt-4.1` provides a good balance between accuracy and token consumption.
+We directly followed the official examples to build the image analysis model, keeping `model="gpt-4.1"` unchanged. Because we found that `gpt-4.1` provides a good balance between accuracy and token consumption.
 
 We focused on designing the `input content` to achieve comprehensive object detection and ensure standardised output. The image analysis API is actually implemented through the `Responses` Interface, which is currently the most advanced API. It supports three roles:
 
-- developer — highest priority, typically used to define system-level behaviour or structured output formats  
-- user — flexible input role, representing user-provided content  
+- developer — highest priority, typically used to define system-level behaviour or structured output formats
+- user — flexible input role, representing user-provided content
 - assistant — used for the model’s responses
 
 We utilised the `developer` role to construct prompts for structured output.
@@ -306,7 +303,7 @@ As mentioned earlier, the current model response API does not yet support direct
 
 We continued using the `gpt-4.1` model for this task, as it provides a reliable balance between reasoning quality and cost efficiency.
 
-- The **developer** role defines the structured output prompt.  
+- The **developer** role defines the structured output prompt.
 - The **user** role provides the task prompt and includes the transcription as part of the input.
 
 #### 3. JSON Output
@@ -315,11 +312,11 @@ The expected output structure is as follows:
 
 ```json
 {
-    "Mode and sentiment": {
-        "mode": "instructional",
-        "sentiment": "positive",
-        "explanation": "The video mode is..."
-    }
+  "Mode and sentiment": {
+    "mode": "instructional",
+    "sentiment": "positive",
+    "explanation": "The video mode is..."
+  }
 }
 ```
 
@@ -367,6 +364,7 @@ This module functions as the orchestrator of the video understanding pipeline. I
 #### 1. Environment Loading and Validation
 
 The script loads environment variables using `dotenv`, retrieving `OPENAI_API_KEY` and `VIDEO_PATH`. It validates that:
+
 - The API key is present.
 - The video file exists.
 - The file type is a supported video format.
@@ -377,9 +375,9 @@ Invalid or missing configurations trigger explicit exceptions before the pipelin
 
 The `openai_pipeline()` function defines a sequential workflow:
 
-1. Transcription – Obtains the complete text from the video via `video_transcript()`.  
-2. Object Detection – Performs frame sampling and image-based detection through `object_detection()`.  
-3. Mode and Sentiment – Uses `sentiment_analysis()` to infer the speech mode and tone.  
+1. Transcription – Obtains the complete text from the video via `video_transcript()`.
+2. Object Detection – Performs frame sampling and image-based detection through `object_detection()`.
+3. Mode and Sentiment – Uses `sentiment_analysis()` to infer the speech mode and tone.
 4. Q&A Generation – Calls `question_answer()` to generate context-based question–answer pairs.
 
 Each stage logs progress and exceptions using the `logging` library for traceability.
@@ -390,8 +388,7 @@ All operations are wrapped in structured `try–except` blocks. Errors are logge
 
 #### 4. Design Considerations
 
-This module focuses on integration and reliability. Each analytical component is isolated in its own module, allowing updates or configuration without modifying `main.py`. 
-
+This module focuses on integration and reliability. Each analytical component is isolated in its own module, allowing updates or configuration without modifying `main.py`.
 
 ## How much AI is used?
 
@@ -402,11 +399,10 @@ The core functionalities of this project are AI-driven, including **speech-to-te
 - `Whisper-1` – Used for speech recognition to transcribe the entire video into text.
 
 - `GPT-4.1` – Used for multiple reasoning and generation tasks:
-    - Infers and integrates objects detected from video frames
-    - Analyses the overall mode and sentiment from the transcript
-    - Generates Q&A pairs based on text
-    - Produces structured JSON outputs
-
+  - Infers and integrates objects detected from video frames
+  - Analyses the overall mode and sentiment from the transcript
+  - Generates Q&A pairs based on text
+  - Produces structured JSON outputs
 
 ## Unit Tests
 
@@ -419,21 +415,21 @@ pytest
 ```
 
 Tests are designed to:
+
 - Verify core functionality — confirm that each module returns the correct output under normal conditions.
 - Validate error handling — ensure the system raises or catches exceptions properly for missing files, invalid input, or failed API calls.
 - Mock external dependencies — simulate OpenAI API, cv2, and file operations to test logic without real network or file access.
 - Check boundary conditions — test edge cases such as unsupported file types, invalid frame rates, or extreme sampling rates.
 - Ensure pipeline integration — confirm the full workflow (from environment setup to JSON output) runs smoothly and handles failures gracefully.
 
-
 ## Limitations and Future Work
+
 **Where are the places you could do better?**
 
 Due to time constraints, this project only tested and evaluated all available models within the `video_transcript` module.
 
 However, in all other modules, the `gpt-4.1` model was used. From an engineering perspective, it is necessary to evaluate alternative models to pursue better performance and lower token costs.
 
-The `video_transcript` module currently only supports extracting the audio track from a video file and sending it to the API. With minor modifications, the module could automatically identify video or audio files. For audio files, no preprocessing is required,  and they can be sent directly to the API for transcription.
+The `video_transcript` module currently only supports extracting the audio track from a video file and sending it to the API. With minor modifications, the module could automatically identify video or audio files. For audio files, no preprocessing is required, and they can be sent directly to the API for transcription.
 
 The `object_detection` module currently uses a sampling rate of 0.5 (one frame every two seconds) to comply with OpenAI's per-minute token limit. A potential improvement would be to calculate the token cost per image and send images to the API in batches, ensuring that the token cost per batch does not exceed the limit. Each batch can be sent at a one-minute interval to avoid triggering errors.
-
