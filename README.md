@@ -2,7 +2,8 @@
 
 ## Overview
 
-This repository is the **Goldenset Intern-to-Hire Project**, which implements a modular and automated AI pipeline for video understanding using the OpenAI API. It integrates speech transcription, object detection, sentiment analysis, and question-answer generation into a single streamlined process.
+This repository is the **Goldenset Intern-to-Hire Project**, which implements a modular and automated AI pipeline for video understanding using the OpenAI API.  
+It integrates speech transcription, object detection, sentiment analysis, and question-answer generation into a single streamlined process.
 
 This Project requires candidates to:
 
@@ -50,7 +51,7 @@ This Project requires candidates to:
 
 After registering an OpenAI account, create an API key by navigating to:
 
-```
+```bash
 Settings
 ↓
 API keys
@@ -74,7 +75,7 @@ For this project, please ensure the following configuration:
 
   Navigating to:
 
-  ```
+  ```bash
   Set up my own Development Container
       ├── Python version
       │   └── 3.12-bullseye
@@ -110,7 +111,7 @@ Ensure the following configuration files exist in the root directory:
 
 This project will be shared via the CodeSandbox link, then follow the instructions:
 
-```
+```bash
 Open the link
 ↓
 Fork (Create new fork)
@@ -177,13 +178,15 @@ You can modify the pipeline by:
 
 #### 1. Input Format
 
-According to OpenAI's official documentation [Create transcription](https://platform.openai.com/docs/api-reference/audio/createTranscription), the audio model supports direct transcription of `.mp4` files. Our experiments revealed several drawbacks to uploading video files directly:
+According to OpenAI's official documentation [Create transcription](https://platform.openai.com/docs/api-reference/audio/createTranscription),
+the audio model supports direct transcription of `.mp4` files. Our experiments revealed several drawbacks to uploading video files directly:
 
 - High token consumption
 - Heavy network usage
 - Long processing time (approximately 3 minutes)
 
-To address this, we used the `moviepy` library to extract the audio track from the video and convert it into an `.mp3` file before sending it to the model. The results showed that:
+To address this, we used the `moviepy` library to extract the audio track from the video and convert it into an `.mp3` file before sending it to the model.
+The results showed that:
 
 - Transcription quality: No noticeable difference
 - Token usage: Significantly reduced
@@ -220,7 +223,8 @@ Therefore, we ultimately selected `whisper-1` model for transcription.
 
 #### 3. Tuning
 
-Although `whisper-1` performed well, we observed occasional hallucinations during repeated experiments: in some runs, the model appended some extra sentences at the end of the transcription, such as “Thanks for watching”, which do not exist in the source audio. The possible causes include:
+Although `whisper-1` performed well, we observed occasional hallucinations during repeated experiments: in some runs,
+the model appended some extra sentences at the end of the transcription, such as “Thanks for watching”, which do not exist in the source audio. The possible causes include:
 
 - Background music and environmental noise
 - Approximately one second of trailing silence at the end
@@ -375,10 +379,10 @@ Invalid or missing configurations trigger explicit exceptions before the pipelin
 
 The `openai_pipeline()` function defines a sequential workflow:
 
-1. Transcription – Obtains the complete text from the video via `video_transcript()`.
-2. Object Detection – Performs frame sampling and image-based detection through `object_detection()`.
-3. Mode and Sentiment – Uses `sentiment_analysis()` to infer the speech mode and tone.
-4. Q&A Generation – Calls `question_answer()` to generate context-based question–answer pairs.
+- Transcription – Obtains the complete text from the video via `video_transcript()`.
+- Object Detection – Performs frame sampling and image-based detection through `object_detection()`.
+- Mode and Sentiment – Uses `sentiment_analysis()` to infer the speech mode and tone.
+- Q&A Generation – Calls `question_answer()` to generate context-based question–answer pairs.
 
 Each stage logs progress and exceptions using the `logging` library for traceability.
 
