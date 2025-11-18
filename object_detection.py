@@ -33,6 +33,7 @@ def video_to_base64(video_path: str, sample_rate: float=0.5) -> list[str]:
 
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    logger.info(f"FPS: {fps}\nTotal Frames: {frame_count}\nDuration: {frame_count/fps}")
 
     # Validate video metadata
     if fps <= 0 or frame_count <=0:
